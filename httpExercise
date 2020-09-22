@@ -1,0 +1,119 @@
+Given the following Controller methods, what can you infer about the HTTP request that would be made to execute them?
+
+WalkersController.cs
+
+public ActionResult Details(int id)
+{
+...A details view of walker "id" , http://localhost:5001/walkers/details/id
+}
+DogsController.cs
+
+public ActionResult Edit(int id)
+{
+...A edit form for dog "id" , http://localhost:5001/dogs/edit/id
+}
+}
+TacosController.cs
+
+public ActionResult Details(int id)
+{
+...A details view of tacos "id" , http://localhost:5001/tacos/details/id
+}
+DogsController.cs
+
+[HttpPost]
+public ActionResult Create(Dog dog)
+{
+...POST request [INSERT] [INTO] [Dog] of a new dog of class Dog. Resulting from a submitted 'Dog' form on the GET of method 'Create' - http://localhost:5001/dogs/create
+}
+DogsController.cs
+
+[HttpPost]
+public ActionResult Edit(int id, Dog dog)
+{
+...POST request [UPDATE] [Dog] edit pre-existing dog[id] of class Dog. Resulting from a submitted 'Dog' form on the GET of method 'Create' - http://localhost:5001/dogs/edit/id
+}
+
+
+Given the following HTTP requests, what would the controller method look like that would handle them?
+
+---
+
+path: /owners/index
+method: GET
+
+public ActionResult Index()
+    {
+        public List<owner> owners = _ownersRepository.GetAllOwners();
+        return view(owners);
+    }
+
+---
+
+path: /owners/details/96
+method: GET
+
+public ActionResult Details(int id)
+    {
+        Owner owner = _ownersRepository.GetOwnerById(96);
+        return view(owner);
+    }
+
+---
+
+path: /dogs/create
+method: GET
+
+public ActionResult Create()
+    {
+        return view(); [Razor form view]
+    }
+    Presents the form for creating a new Dog
+
+---
+
+path: /dogs/create
+method: POST
+body:
+Name: Delta
+Breed: Golden Retriever
+Notes: She will chase squirrels
+
+public ActionResult Create(Dog dog)
+    { (with try/catch)
+        dog.ownerId = GetCurrentUserId();
+        _dogRepository.AddDog(dog)
+            [
+            dog has values of
+            Name: Delta
+            Breed: Golden Retriever
+            Notes: She will chase squirrels
+            Ownerid: (current id)
+            ImageUrl: Null
+            ]
+    }
+
+---
+
+path: walkers/delete/6
+method: POST
+body:
+Id: 6
+Name: Mellesa
+NeighborhoodId: 5
+
+public ActionResult Delete(int Id Walker walker)
+{
+    try
+    {
+        _walkersRepository.DeleteWalker(6);
+    }
+
+    the walker object is only here in case of a catch so there is something to return to the view, its not necessary for the delete itself
+
+    catch
+    {
+        return view(walker)
+    }
+
+}
